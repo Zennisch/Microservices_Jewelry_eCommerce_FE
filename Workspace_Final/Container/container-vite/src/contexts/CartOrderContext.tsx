@@ -1,5 +1,5 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
-import cartOrderService, {CartItem, Cart, Order, ShippingInfo} from '../services/cartOrderService';
+import cartOrderService, {CartItem, Cart, Order, ShippingInfo, DeliveryProof} from '../services/cartOrderService';
 import {useAuth} from './AuthContext';
 import catalogService from '../services/catalogService';
 
@@ -35,6 +35,11 @@ interface CartOrderContextType {
     fetchOrders: () => Promise<void>;
     getOrderById: (orderId: number) => Promise<Order | undefined>;
     cancelOrder: (orderId: number) => Promise<void>;
+    // Add delivery management
+    assignDeliverer: (orderId: number, delivererId: number) => Promise<void>;
+    getDelivererOrders: (delivererId: number) => Promise<Order[]>;
+    updateDeliveryStatus: (orderId: number, status: string) => Promise<void>;
+    uploadDeliveryProof: (orderId: number, proofImage: File, notes?: string) => Promise<void>;
 }
 
 const CartOrderContext = createContext<CartOrderContextType | undefined>(undefined);
@@ -449,6 +454,73 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({children}) 
         }
     };
 
+    const assignDeliverer = async (orderId: number, delivererId: number) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await cartOrderService.assignDeliverer(orderId, delivererId);
+            // Refresh orders list
+            await fetchOrders();
+        } catch (err: any) {
+            console.error('Error assigning deliverer:', err);
+            setError(err.response?.data?.message || 'Could not assign deliverer');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Get orders assigned to a specific deliverer
+    const getDelivererOrders = async (delivererId: number): Promise<Order[]> => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const delivererOrders = await cartOrderService.getDelivererOrders(delivererId);
+            return delivererOrders;
+        } catch (err: any) {
+            console.error('Error fetching deliverer orders:', err);
+            setError(err.response?.data?.message || 'Could not fetch orders');
+            return [];
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Update delivery status
+    const updateDeliveryStatus = async (orderId: number, status: string) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await cartOrderService.updateDeliveryStatus(orderId, status);
+            // Refresh orders list
+            await fetchOrders();
+        } catch (err: any) {
+            console.error('Error updating delivery status:', err);
+            setError(err.response?.data?.message || 'Could not update status');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Upload delivery proof
+    const uploadDeliveryProof = async (orderId: number, proofImage: File, notes?: string) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await cartOrderService.uploadDeliveryProof(orderId, proofImage, notes);
+            // Refresh orders list
+            await fetchOrders();
+        } catch (err: any) {
+            console.error('Error uploading delivery proof:', err);
+            setError(err.response?.data?.message || 'Could not upload proof');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <CartOrderContext.Provider
             value={{
@@ -475,6 +547,11 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({children}) 
                 fetchOrders,
                 getOrderById,
                 cancelOrder,
+                // Add delivery management methods
+                assignDeliverer,
+                getDelivererOrders,
+                updateDeliveryStatus,
+                uploadDeliveryProof,
             }}
         >
             {children}

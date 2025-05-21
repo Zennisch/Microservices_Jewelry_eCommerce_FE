@@ -26,6 +26,16 @@ export interface OrderItem {
     productName?: string;
 }
 
+export interface DeliveryProof {
+    id: number;
+    orderId: number;
+    delivererId: number;
+    imageUrl: string;
+    notes?: string;
+    createdAt: string;
+}
+
+// Update Order interface
 export interface Order {
     id: number;
     userId: number;
@@ -36,6 +46,13 @@ export interface Order {
     updatedAt: string;
     orderDetails: OrderDetail[];
     totalAmount?: number;
+    delivererId?: number;
+    deliverer?: {
+        id: number;
+        name: string;
+        email: string;
+    };
+    deliveryProof?: DeliveryProof;
 }
 
 export interface OrderDetail {
@@ -206,6 +223,46 @@ const cartOrderService = {
             weight
         });
         return response.data.fee;
+    },
+
+    getDeliverers: async (): Promise<any[]> => {
+        const response = await axiosInstance.get(`${BASE_URL}/deliverers`);
+        return response.data;
+    },
+    
+    assignDeliverer: async (orderId: number, delivererId: number): Promise<Order> => {
+        const response = await axiosInstance.post(`${BASE_URL}/orders/assign`, {
+            orderId, 
+            delivererId
+        });
+        return response.data.order;
+    },
+    
+    getDelivererOrders: async (delivererId: number): Promise<Order[]> => {
+        const response = await axiosInstance.get(`${BASE_URL}/deliverers/${delivererId}/orders`);
+        return response.data;
+    },
+    
+    updateDeliveryStatus: async (orderId: number, status: string): Promise<Order> => {
+        const response = await axiosInstance.put(`${BASE_URL}/orders/${orderId}/status`, { status });
+        return response.data.order;
+    },
+    
+    uploadDeliveryProof: async (orderId: number, proofImage: File, notes?: string): Promise<{deliveryProof: DeliveryProof, order: Order}> => {
+        const formData = new FormData();
+        formData.append('proof_image', proofImage);
+        if (notes) formData.append('notes', notes);
+        
+        const response = await axiosInstance.post(
+            `${BASE_URL}/orders/${orderId}/proof`, 
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+        return response.data;
     }
 };
 
