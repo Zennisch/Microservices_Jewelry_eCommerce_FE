@@ -208,7 +208,7 @@ const OrderDetailPage = () => {
       <div className="text-center text-red-600 p-4">
         <p>{error || 'Order not found'}</p>
         <Button 
-          onClick={() => navigate('/orders')}
+          onClick={() => navigate('/manager/orders')}
           className="mt-4"
         >
           Back to Orders
@@ -254,7 +254,7 @@ const OrderDetailPage = () => {
         <h1 className="text-2xl font-bold">Order #{order.id}</h1>
         <Button 
           variant="outline"
-          onClick={() => navigate('/orders')}
+          onClick={() => navigate('/manager/orders')}
         >
           Back to Orders
         </Button>
