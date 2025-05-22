@@ -292,7 +292,7 @@ const OrderDetailPage = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Transaction ID</p>
-              <p>{order.transactionId || 'N/A'}</p>
+              <p>{order.id || 'N/A'}</p>
             </div>
           </div>
           
