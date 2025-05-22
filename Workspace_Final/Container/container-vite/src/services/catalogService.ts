@@ -1,7 +1,7 @@
 import axiosInstance from './axiosConfig';
+import SERVICE_ENDPOINTS from './apiConfig';
 
-// Cấu hình API Gateway endpoint cho service catalog
-const BASE_URL = 'http://localhost:8000/api/v1/catalog';
+const BASE_URL = SERVICE_ENDPOINTS.CATALOG;
 
 // Các interfaces cho response data
 interface Category {

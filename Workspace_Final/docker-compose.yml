@@ -16,7 +16,7 @@ services:
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
-      - VITE_BACKEND_HOST=api-gateway
+      - VITE_BACKEND_HOST=192.168.1.93
       - VITE_BACKEND_PORT=8000
 
   service-account:

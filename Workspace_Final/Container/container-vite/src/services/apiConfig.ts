@@ -1,5 +1,5 @@
-const BACKEND_HOST = import.meta.env.BACKEND_HOST || 'localhost';
-const BACKEND_PORT = import.meta.env.BACKEND_PORT || '8000';
+const BACKEND_HOST = '192.168.1.93';
+const BACKEND_PORT = '8000';
 
 const BACKEND_URL = `http://${BACKEND_HOST}:${BACKEND_PORT}/api/v1`;
 const SERVICE_ENDPOINTS = {

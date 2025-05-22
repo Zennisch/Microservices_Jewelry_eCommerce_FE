@@ -1,8 +1,8 @@
 import axiosInstance from './axiosConfig';
 import {Product} from './catalogService';
+import SERVICE_ENDPOINTS from './apiConfig';
 
-// Cấu hình API Gateway endpoint cho service cart-order
-const BASE_URL = 'http://localhost:8000/api/v1/cart-order';
+const BASE_URL = SERVICE_ENDPOINTS.CART_ORDER;
 
 // Interfaces
 export interface CartItem {
