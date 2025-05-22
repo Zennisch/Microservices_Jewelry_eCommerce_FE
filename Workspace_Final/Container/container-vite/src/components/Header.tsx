@@ -46,7 +46,7 @@ const Header = () => {
     };
 
     const handleImageError = (e) => {
-        e.currentTarget.src = '/images/account-default.png';
+        e.currentTarget.src = '/images/account-default.jpg';
     };
 
     // Close dropdown when clicking outside
@@ -171,7 +171,7 @@ const Header = () => {
                                         <div className="dropdown-menu absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-20 animate-fadeIn border border-gray-100">
                                             <div className="px-4 py-2 border-b border-gray-100">
                                                 <p className="text-sm font-medium text-gray-800">{user.name}</p>
-                                                <p className="text-xs text-gray-500">Khách hàng VIP</p>
+                                                <p className="text-xs text-gray-500">{user.role?.name ? 'Người Dùng' : 'Khách Hàng'}</p>
                                             </div>
                                             <a
                                                 href={`${userHref}/profile`}
