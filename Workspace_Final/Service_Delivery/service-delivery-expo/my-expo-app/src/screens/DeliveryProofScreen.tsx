@@ -1,176 +1,126 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  Image, 
-  ScrollView, 
-  Alert, 
-  KeyboardAvoidingView, 
-  Platform,
-  TouchableOpacity
-} from 'react-native';
-import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Camera, CameraType } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
-import { useDelivery } from '../contexts/DeliveryContext';
-import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
-import Loading from '../components/ui/Loading';
-import CameraComponent from '../components/CameraComponent';
 
-type DeliveryProofRouteParams = {
-  DeliveryProof: {
-    orderId: number;
-  };
-};
+interface CameraComponentProps {
+  onCapture: (uri: string) => void;
+  onCancel: () => void;
+}
 
-const DeliveryProofScreen: React.FC = () => {
-  const route = useRoute<RouteProp<DeliveryProofRouteParams, 'DeliveryProof'>>();
-  const navigation = useNavigation();
-  const { orderId } = route.params;
-  
-  const { getOrderById, uploadDeliveryProof, loading } = useDelivery();
-  
-  const [notes, setNotes] = useState<string>('');
-  const [imageUri, setImageUri] = useState<string | null>(null);
-  const [showCamera, setShowCamera] = useState<boolean>(false);
-  
-  // Get order data
-  const order = getOrderById(orderId);
-  
-  // Handle image capture
-  const handleCapture = (uri: string) => {
-    setImageUri(uri);
-    setShowCamera(false);
-  };
-  
-  // Handle camera cancel
-  const handleCameraCancel = () => {
-    setShowCamera(false);
-  };
-  
-  // Submit proof
-  const handleSubmit = async () => {
-    if (!imageUri) {
-      Alert.alert('Error', 'Please take a photo as proof of delivery');
-      return;
-    }
-    
-    try {
-      const success = await uploadDeliveryProof(orderId, imageUri, notes);
+const CameraComponent: React.FC<CameraComponentProps> = ({ onCapture, onCancel }) => {
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [type, setType] = useState(CameraType.back);
+  const cameraRef = useRef<Camera>(null);
+
+  // Request camera permissions on component mount
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
       
-      if (success) {
+      if (status !== 'granted') {
         Alert.alert(
-          'Success', 
-          'Delivery proof submitted successfully',
-          [{ text: 'OK', onPress: () => navigation.navigate('Main' as never) }]
+          'Camera Permission Required',
+          'This app needs camera access to take delivery proof photos.',
+          [
+            { 
+              text: 'OK', 
+              onPress: onCancel // Go back if permission denied
+            }
+          ]
         );
       }
+    })();
+  }, []);
+
+  // Take picture handler
+  const takePicture = async () => {
+    if (!cameraRef.current) return;
+    
+    try {
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.8,
+        skipProcessing: true,
+      });
+      
+      onCapture(photo.uri);
     } catch (error) {
-      console.error('Failed to upload delivery proof:', error);
-      Alert.alert('Error', 'Failed to upload delivery proof. Please try again.');
+      console.error('Error taking picture:', error);
+      Alert.alert('Error', 'Failed to take picture. Please try again.');
     }
   };
-  
-  // If camera is active, show camera component
-  if (showCamera) {
-    return <CameraComponent onCapture={handleCapture} onCancel={handleCameraCancel} />;
+
+  // Flip camera handler
+  const toggleCameraType = () => {
+    setType(current => 
+      current === CameraType.back ? CameraType.front : CameraType.back
+    );
+  };
+
+  // Show loading while checking permissions
+  if (hasPermission === null) {
+    return (
+      <View className="flex-1 items-center justify-center bg-black">
+        <Text className="text-white">Requesting camera permission...</Text>
+      </View>
+    );
   }
-  
-  if (!order) {
-    return <Loading fullScreen message="Loading order details..." />;
+
+  // Show message if permission denied
+  if (hasPermission === false) {
+    return (
+      <View className="flex-1 items-center justify-center bg-black">
+        <Text className="text-white mb-4">No access to camera</Text>
+        <TouchableOpacity 
+          onPress={onCancel} 
+          className="bg-amber-500 px-4 py-2 rounded-lg"
+        >
+          <Text className="text-white font-medium">Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
-  
+
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1"
-    >
-      <ScrollView className="flex-1 bg-gray-100">
-        <View className="p-4">
-          <Card className="mb-4">
-            <Text className="text-lg font-bold mb-4">Upload Delivery Proof</Text>
-            <Text className="text-gray-700 mb-2">
-              Please take a photo as proof of delivery for Order #{order.id}
-            </Text>
-            
-            {imageUri ? (
-              <View className="mb-4">
-                <Image 
-                  source={{ uri: imageUri }} 
-                  className="w-full h-60 rounded-lg" 
-                  resizeMode="cover"
-                />
-                <TouchableOpacity 
-                  onPress={() => setShowCamera(true)}
-                  className="absolute top-2 right-2 bg-black bg-opacity-50 rounded-full p-2"
-                >
-                  <Ionicons name="camera" size={20} color="white" />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity
-                onPress={() => setShowCamera(true)}
-                className="h-60 bg-gray-200 rounded-lg items-center justify-center mb-4"
-              >
-                <Ionicons name="camera" size={48} color="#9CA3AF" />
-                <Text className="text-gray-500 mt-2">Tap to take photo</Text>
-              </TouchableOpacity>
-            )}
-            
-            <Text className="text-gray-700 mb-2">Delivery Notes (optional):</Text>
-            <TextInput
-              className="border border-gray-300 rounded-lg px-4 py-2 mb-4"
-              placeholder="Add any notes about the delivery"
-              multiline
-              numberOfLines={3}
-              value={notes}
-              onChangeText={setNotes}
-              textAlignVertical="top"
-            />
-            
-            <Button 
-              title="Submit Delivery Proof" 
-              onPress={handleSubmit} 
-              disabled={!imageUri || loading}
-              loading={loading}
-            />
-          </Card>
+    <View className="flex-1">
+      <Camera 
+        ref={cameraRef} 
+        type={type} 
+        className="flex-1"
+        ratio="16:9"
+      >
+        <View className="flex-1 bg-transparent flex-row">
+          <TouchableOpacity 
+            className="absolute top-10 left-5 z-10"
+            onPress={onCancel}
+          >
+            <View className="bg-black bg-opacity-50 rounded-full p-2">
+              <Ionicons name="close" size={24} color="white" />
+            </View>
+          </TouchableOpacity>
           
-          <Card>
-            <Text className="text-lg font-bold mb-2">Delivery Information</Text>
-            
-            <View className="mb-3">
-              <Text className="text-gray-500 text-sm">Customer</Text>
-              <Text className="font-medium">{order.user?.name || 'N/A'}</Text>
+          <TouchableOpacity 
+            className="absolute top-10 right-5 z-10"
+            onPress={toggleCameraType}
+          >
+            <View className="bg-black bg-opacity-50 rounded-full p-2">
+              <Ionicons name="camera-reverse" size={24} color="white" />
             </View>
-            
-            <View className="mb-3">
-              <Text className="text-gray-500 text-sm">Address</Text>
-              <Text className="font-medium">{order.address}</Text>
-            </View>
-            
-            <View>
-              <Text className="text-gray-500 text-sm">Payment Method</Text>
-              <View className="flex-row items-center mt-1">
-                <Ionicons 
-                  name={order.paymentMethod === 'COD' ? 'cash-outline' : 'card-outline'} 
-                  size={16} 
-                  color="#65A30D"
-                />
-                <Text className="ml-1 font-medium">{order.paymentMethod}</Text>
-                <Text className={`ml-2 ${
-                  order.paymentStatus === 'PAID' ? 'text-green-600' : 'text-amber-600'
-                }`}>
-                  ({order.paymentStatus})
-                </Text>
-              </View>
-            </View>
-          </Card>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        
+        <View className="flex-row justify-center items-center mb-10">
+          <TouchableOpacity
+            onPress={takePicture}
+            className="bg-white rounded-full p-2 m-4"
+          >
+            <View className="bg-white border-4 border-gray-200 rounded-full h-16 w-16"></View>
+          </TouchableOpacity>
+        </View>
+      </Camera>
+    </View>
   );
 };
 
-export default DeliveryProofScreen;
+export default CameraComponent;

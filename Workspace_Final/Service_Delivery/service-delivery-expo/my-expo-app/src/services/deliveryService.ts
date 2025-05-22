@@ -66,38 +66,42 @@ const deliveryService = {
     try {
       // Lấy ID người dùng từ AsyncStorage
       const userData = await AsyncStorage.getItem('user_data');
+      console.log('User data for proof upload:', userData);
+
       const user = userData ? JSON.parse(userData) : null;
       const delivererId = user?.id;
+
+      console.log('Deliverer ID for proof upload:', delivererId);
+
+      if (!delivererId) {
+        throw new Error('Deliverer ID not found. Please log in again.');
+      }
 
       // Create form data
       const formData = new FormData();
 
       // Add deliverer ID to form data
-      if (delivererId) {
-        formData.append('delivererId', delivererId.toString());
-      }
+      formData.append('delivererId', delivererId.toString());
 
-      // Add the image file
-      const fileInfo = await FileSystem.getInfoAsync(imageUri);
-      if (!fileInfo.exists) {
-        throw new Error('Image file does not exist');
-      }
-
+      // Get filename from URI
       const fileName = imageUri.split('/').pop() || 'delivery_proof.jpg';
 
-      // @ts-ignore - FormData in React Native has slightly different typing
+      // Add the image to form data - this is the correct way in React Native
       formData.append('proof_image', {
         uri: imageUri,
-        type: 'image/jpeg', // assuming jpg format, adjust if needed
+        type: 'image/jpeg',
         name: fileName,
-      });
+      } as any);
 
       // Add notes if provided
       if (notes) {
         formData.append('notes', notes);
       }
 
-      const response = await axios.put(`${BASE_URL}/orders/${orderId}/proof`, formData, {
+      console.log('Sending form data:', JSON.stringify(formData));
+
+      // POST (not PUT) to upload the image
+      const response = await axios.post(`${BASE_URL}/orders/${orderId}/proof`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
