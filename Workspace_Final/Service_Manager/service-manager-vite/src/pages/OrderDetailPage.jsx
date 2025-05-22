@@ -282,13 +282,13 @@ const OrderDetailPage = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Payment Status</p>
-              <Badge className={`mt-1 ${order.paymentStatus === 'PAID' ? 'bg-green-500' : 'bg-orange-500'}`}>
-                {order.paymentStatus}
+              <Badge className={`mt-1 ${order.payment_status === 'PAID' ? 'bg-green-500' : 'bg-orange-500'}`}>
+                {order.payment_status}
               </Badge>
             </div>
             <div>
               <p className="text-sm text-gray-500">Payment Method</p>
-              <p>{order.paymentMethod || 'N/A'}</p>
+              <p>{order.payment_method || 'N/A'}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Transaction ID</p>
