@@ -91,6 +91,14 @@ export interface CheckoutData {
     shippingInfo: ShippingInfo;
 }
 
+export interface OrderUpdateParams {
+    address?: string;
+    status?: string;
+    paymentStatus?: string;
+    delivererId?: number;
+    // Add other fields as needed
+}
+
 // Service methods
 const cartOrderService = {
     /**
@@ -136,11 +144,21 @@ const cartOrderService = {
         await axiosInstance.delete(`${BASE_URL}/cart-items/${cartItemId}`);
     },
 
+    getOrders: async (userId: number): Promise<Order[]> => {
+        const response = await axiosInstance.get(`${BASE_URL}/orders`);
+        return response.data;
+    },
+
     /**
      * Tạo đơn hàng mới
      */
     createOrder: async (checkoutData: CheckoutData): Promise<Order> => {
         const response = await axiosInstance.post(`${BASE_URL}/orders`, checkoutData);
+        return response.data.order;
+    },
+
+    updateOrder: async (orderId: number, updateData: OrderUpdateParams): Promise<Order> => {
+        const response = await axiosInstance.put(`${BASE_URL}/orders/${orderId}`, updateData);
         return response.data.order;
     },
 
@@ -233,29 +251,59 @@ const cartOrderService = {
         return response.data.fee;
     },
 
+    /**
+     * Get list of all available deliverers
+     * @returns Array of deliverer users
+     */
     getDeliverers: async (): Promise<any[]> => {
-        const response = await axiosInstance.get(`${BASE_URL}/deliverers`);
+        const response = await axiosInstance.get(`${BASE_URL}/delivery/deliverers`);
         return response.data;
     },
 
+    /**
+     * Assign a deliverer to an order
+     * @param orderId The order ID to assign
+     * @param delivererId The deliverer user ID
+     * @returns Updated order with deliverer assigned
+     */
     assignDeliverer: async (orderId: number, delivererId: number): Promise<Order> => {
-        const response = await axiosInstance.post(`${BASE_URL}/orders/assign`, {
+        const response = await axiosInstance.post(`${BASE_URL}/delivery/orders/assign`, {
             orderId,
             delivererId,
         });
         return response.data.order;
     },
 
+    /**
+     * Get all orders assigned to a specific deliverer
+     * @param delivererId The deliverer's user ID
+     * @returns Array of orders assigned to the deliverer
+     */
     getDelivererOrders: async (delivererId: number): Promise<Order[]> => {
-        const response = await axiosInstance.get(`${BASE_URL}/deliverers/${delivererId}/orders`);
+        const response = await axiosInstance.get(`${BASE_URL}/delivery/deliverers/${delivererId}/orders`);
         return response.data;
     },
 
+    /**
+     * Update an order's delivery status
+     * @param orderId The order ID to update
+     * @param status The new delivery status
+     * @returns Updated order
+     */
     updateDeliveryStatus: async (orderId: number, status: string): Promise<Order> => {
-        const response = await axiosInstance.put(`${BASE_URL}/orders/${orderId}/status`, {status});
+        const response = await axiosInstance.put(`${BASE_URL}/delivery/orders/${orderId}/status`, {
+            status
+        });
         return response.data.order;
     },
 
+    /**
+     * Upload proof of delivery for an order
+     * @param orderId Order ID that was delivered
+     * @param proofImage Image file showing delivery proof
+     * @param notes Optional notes about the delivery
+     * @returns Delivery proof record and updated order
+     */
     uploadDeliveryProof: async (
         orderId: number,
         proofImage: File,
@@ -265,7 +313,7 @@ const cartOrderService = {
         formData.append('proof_image', proofImage);
         if (notes) formData.append('notes', notes);
 
-        const response = await axiosInstance.post(`${BASE_URL}/orders/${orderId}/proof`, formData, {
+        const response = await axiosInstance.post(`${BASE_URL}/delivery/orders/${orderId}/proof`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
