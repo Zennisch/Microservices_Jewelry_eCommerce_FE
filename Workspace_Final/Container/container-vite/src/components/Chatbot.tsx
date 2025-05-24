@@ -37,7 +37,7 @@ const ChatBot: React.FC<ChatBotProps> = ({onClose}) => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/chatbot/response', {
+            const response = await fetch('http://localhost:5000/api/v1/response', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

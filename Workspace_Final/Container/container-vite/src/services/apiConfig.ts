@@ -1,4 +1,4 @@
-const BACKEND_HOST = '172.28.32.57';
+const BACKEND_HOST = 'localhost';
 const BACKEND_PORT = '8000';
 
 const BACKEND_URL = `http://${BACKEND_HOST}:${BACKEND_PORT}/api/v1`;
