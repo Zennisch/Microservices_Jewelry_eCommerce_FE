@@ -67,6 +67,22 @@ services:
       - NODE_ENV=development
       - HOST=0.0.0.0
 
+  service-manager:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./Service_Manager/service-manager-vite:/app
+      - node_modules_manager:/app/node_modules
+    ports:
+      - "3003:3003"  # Mapped to different host port
+    command: >
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm run o"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+
 networks:
   frontend-network:
     driver: bridge
@@ -78,3 +94,4 @@ volumes:
   node_modules_account:
   node_modules_cart:
   node_modules_catalog:
+  node_modules_manager:
