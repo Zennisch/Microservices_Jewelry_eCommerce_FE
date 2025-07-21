@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   container:
     image: node:20-alpine
@@ -19,7 +17,7 @@ services:
       - VITE_BACKEND_HOST=192.168.1.93
       - VITE_BACKEND_PORT=8000
 
-  service-account:
+  frontend-service-account:
     image: node:20-alpine
     working_dir: /app
     volumes:
@@ -35,7 +33,7 @@ services:
       - NODE_ENV=development
       - HOST=0.0.0.0
 
-  service-cart-order:
+  frontend-service-cart-order:
     image: node:20-alpine
     working_dir: /app
     volumes:
@@ -51,7 +49,7 @@ services:
       - NODE_ENV=development
       - HOST=0.0.0.0
 
-  service-catalog:
+  frontend-service-catalog:
     image: node:20-alpine
     working_dir: /app
     volumes:
@@ -67,7 +65,7 @@ services:
       - NODE_ENV=development
       - HOST=0.0.0.0
 
-  service-manager:
+  frontend-service-manager:
     image: node:20-alpine
     working_dir: /app
     volumes:
@@ -86,7 +84,7 @@ services:
 networks:
   frontend-network:
     driver: bridge
-  jec-network:
+  jec-frontend-network:
     external: true
 
 volumes:
