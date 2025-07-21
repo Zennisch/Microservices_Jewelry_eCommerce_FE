@@ -46,7 +46,7 @@ const Header = () => {
     };
 
     const handleImageError = (e) => {
-        e.currentTarget.src = '/images/account-default.png';
+        e.currentTarget.src = '/images/account-default.jpg';
     };
 
     // Close dropdown when clicking outside
@@ -62,6 +62,56 @@ const Header = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [showDropdown]);
+
+    // Render admin/manager button based on user role
+    const renderRoleBasedButton = () => {
+        // If not authenticated or still loading, don't show anything
+        if (!isAuthenticated || loading) return null;
+        
+        // Get user role
+        const roleName = user?.role?.name;
+        
+        if (roleName === 'ADMIN') {
+            return (
+                <Link 
+                    to="/admin" 
+                    className="text-gray-700 hover:text-amber-600 transition-colors flex items-center"
+                    title="Quản trị hệ thống"
+                >
+                    <span className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 flex items-center justify-center transition-colors">
+                        <i className="fas fa-user-shield text-sm text-red-600"></i>
+                    </span>
+                </Link>
+            );
+        } else if (roleName === 'MANAGER') {
+            return (
+                <Link 
+                    to="/manager" 
+                    className="text-gray-700 hover:text-amber-600 transition-colors flex items-center"
+                    title="Quản lý cửa hàng"
+                >
+                    <span className="w-8 h-8 rounded-full bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-colors">
+                        <i className="fas fa-store text-sm text-blue-600"></i>
+                    </span>
+                </Link>
+            );
+        } else if (roleName === 'DELIVERER') {
+            return (
+                <Link 
+                    to="/delivery" 
+                    className="text-gray-700 hover:text-amber-600 transition-colors flex items-center"
+                    title="Giao hàng"
+                >
+                    <span className="w-8 h-8 rounded-full bg-green-50 hover:bg-green-100 flex items-center justify-center transition-colors">
+                        <i className="fas fa-truck text-sm text-green-600"></i>
+                    </span>
+                </Link>
+            );
+        }
+        
+        // For regular users (USER role), don't render anything
+        return null;
+    };
 
     return (
         <>
@@ -120,14 +170,20 @@ const Header = () => {
 
                         {/* Right section with user actions */}
                         <div className="w-1/4 flex justify-end items-center space-x-5">
-                            <Link
-                                to="/contact"
-                                className="text-gray-700 hover:text-amber-600 transition-colors hidden md:flex items-center"
-                            >
-                                <span className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
-                                    <i className="fas fa-phone-alt text-xs"></i>
-                                </span>
-                            </Link>
+                            {/* Replace contact link with role-based button */}
+                            {!isAuthenticated && (
+                                <Link
+                                    to="/contact"
+                                    className="text-gray-700 hover:text-amber-600 transition-colors hidden md:flex items-center"
+                                >
+                                    <span className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
+                                        <i className="fas fa-phone-alt text-xs"></i>
+                                    </span>
+                                </Link>
+                            )}
+                            
+                            {/* Render different button based on role */}
+                            {renderRoleBasedButton()}
 
                             <Link
                                 to="/cart"
@@ -171,10 +227,10 @@ const Header = () => {
                                         <div className="dropdown-menu absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-20 animate-fadeIn border border-gray-100">
                                             <div className="px-4 py-2 border-b border-gray-100">
                                                 <p className="text-sm font-medium text-gray-800">{user.name}</p>
-                                                <p className="text-xs text-gray-500">Khách hàng VIP</p>
+                                                <p className="text-xs text-gray-500">{user.role?.name || 'Khách Hàng'}</p>
                                             </div>
                                             <a
-                                                href={`${userHref}/profile`}
+                                                href={`/account/profile`}
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
                                             >
                                                 <i className="fas fa-user-circle mr-2 text-amber-600"></i>Hồ Sơ
@@ -190,12 +246,6 @@ const Header = () => {
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
                                             >
                                                 <i className="fas fa-calendar-alt mr-2 text-amber-600"></i>Đặt Lịch Hẹn
-                                            </a>
-                                            <a
-                                                href={`${userHref}/settings`}
-                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
-                                            >
-                                                <i className="fas fa-cog mr-2 text-amber-600"></i>Cài Đặt
                                             </a>
                                             <div className="border-t border-gray-100 my-1"></div>
                                             <a

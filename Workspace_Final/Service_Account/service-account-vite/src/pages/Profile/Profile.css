@@ -1,0 +1,126 @@
+.profile-container {
+  min-height: calc(100vh - 100px);
+  background-color: #f9fafb;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+  margin-top: 60px;
+}
+
+.profile-header {
+  position: relative;
+  background: linear-gradient(135deg, #D4AF37 0%, #F9F295 100%);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  padding: 1.5rem;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.profile-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.profile-sidebar {
+  border-right: 1px solid #e5e7eb;
+}
+
+.profile-tab {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.profile-tab:hover {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.profile-tab.active {
+  color: #b45309;
+  border-left: 4px solid #d97706;
+  background-color: rgba(245, 158, 11, 0.08);
+  font-weight: 500;
+}
+
+.profile-tab.active i {
+  color: #b45309;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  background-color: #f9fafb;
+  transition: all 0.2s ease;
+}
+
+.form-input:hover {
+  border-color: #d1d5db;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #d97706;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #b45309;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-secondary:hover {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+@media (max-width: 768px) {
+  .profile-layout {
+    flex-direction: column;
+  }
+  
+  .profile-sidebar {
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .profile-tab-list {
+    display: flex;
+    overflow-x: auto;
+  }
+}

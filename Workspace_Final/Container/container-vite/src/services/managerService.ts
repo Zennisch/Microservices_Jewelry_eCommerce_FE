@@ -1,7 +1,7 @@
 import axiosInstance from './axiosConfig';
+import SERVICE_ENDPOINTS from './apiConfig';
 
-// Base URL for Service_Manager endpoints through API Gateway
-const BASE_URL = 'http://localhost:8000/api/v1/manager';
+const BASE_URL = SERVICE_ENDPOINTS.MANAGER;
 
 // Types and Interfaces
 export interface Product {

@@ -11,10 +11,9 @@ const NavigationManager: React.FC<NavigationManagerProps> = ({ scrolled = false 
   // Sử dụng các route tương tự như trong Sidebar
   const navItems = [
     { name: 'Sản phẩm', path: '/manager', icon: 'fas fa-box-open' },
-    { name: 'Dashboard', path: '/manager/dashboard', icon: 'fas fa-chart-line' },
-    { name: 'Danh mục', path: '/manager/categories', icon: 'fas fa-folder-open' },
+    { name: 'Bộ sưu tập', path: '/manager/categories', icon: 'fas fa-folder-open' },
     { name: 'Đơn hàng', path: '/manager/orders', icon: 'fas fa-shopping-cart' },
-    { name: 'Khách hàng', path: '/manager/customers', icon: 'fas fa-users' },
+    { name: 'Thống kê', path: '/manager/dashboard', icon: 'fas fa-chart-line' },
   ];
 
   const toggleMobileMenu = () => {

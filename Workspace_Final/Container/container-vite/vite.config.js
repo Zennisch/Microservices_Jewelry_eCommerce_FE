@@ -17,6 +17,7 @@ export default defineConfig({
                 './catalogService': './src/services/catalogService.ts',
                 './cartOrderService': './src/services/cartOrderService.ts',
                 './managerService': './src/services/managerService.ts',
+                './apiConfig': './src/services/apiConfig.js',
             },
             remotes: {
                 account: 'http://localhost:3001/assets/remoteEntry.js',
