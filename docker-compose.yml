@@ -7,11 +7,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development
-      - HOST=0.0.0.0
-      - VITE_BACKEND_HOST=192.168.1.93
-      - VITE_BACKEND_PORT=8000
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - VITE_BACKEND_HOST=${VITE_BACKEND_HOST}
+      - VITE_BACKEND_PORT=${VITE_BACKEND_PORT}
+      - VITE_FRONTEND_HOST=${VITE_FRONTEND_HOST}
+      - VITE_FRONTEND_PORT=${VITE_FRONTEND_PORT}
     networks:
       - frontend-network
 
@@ -21,9 +25,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development
-      - HOST=0.0.0.0
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - VITE_FRONTEND_HOST=${VITE_FRONTEND_HOST}
+      - VITE_FRONTEND_PORT=${VITE_FRONTEND_PORT}
     networks:
       - frontend-network
     depends_on:
@@ -35,9 +43,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3003:3003"
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development
-      - HOST=0.0.0.0
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - VITE_FRONTEND_HOST=${VITE_FRONTEND_HOST}
+      - VITE_FRONTEND_PORT=${VITE_FRONTEND_PORT}
     networks:
       - frontend-network
     depends_on:
@@ -49,9 +61,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3005:3005"
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development
-      - HOST=0.0.0.0
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - VITE_FRONTEND_HOST=${VITE_FRONTEND_HOST}
+      - VITE_FRONTEND_PORT=${VITE_FRONTEND_PORT}
     networks:
       - frontend-network
     depends_on:
@@ -63,42 +79,17 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3006:3006"
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development
-      - HOST=0.0.0.0
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - VITE_FRONTEND_HOST=${VITE_FRONTEND_HOST}
+      - VITE_FRONTEND_PORT=${VITE_FRONTEND_PORT}
     networks:
       - frontend-network
     depends_on:
       - container
-
-  # Optional services (uncomment if needed)  
-  # frontend-service-user:
-  #   build:
-  #     context: ./Workspace/Service_User/service-user-vite
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3004:3004"
-  #   environment:
-  #     - NODE_ENV=development
-  #     - HOST=0.0.0.0
-  #   networks:
-  #     - frontend-network
-  #   depends_on:
-  #     - container
-
-  # frontend-service-admin:
-  #   build:
-  #     context: ./Workspace/Service_Admin/service-admin-vite
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3002:3002"
-  #   environment:
-  #     - NODE_ENV=development
-  #     - HOST=0.0.0.0
-  #   networks:
-  #     - frontend-network
-  #   depends_on:
-  #     - container
 
 networks:
   frontend-network:
