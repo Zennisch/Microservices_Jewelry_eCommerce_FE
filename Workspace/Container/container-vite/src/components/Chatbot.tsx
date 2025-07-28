@@ -37,7 +37,11 @@ const ChatBot: React.FC<ChatBotProps> = ({onClose}) => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/v1/response', {
+            const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST || 'localhost';
+            const BACKEND_PORT = 5000;
+            const apiUrl = `http://${BACKEND_HOST}:${BACKEND_PORT}/api/v1/response`;
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,6 +92,7 @@ const ChatBot: React.FC<ChatBotProps> = ({onClose}) => {
         setInputText('');
     };
 
+    // ...existing code...
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             sendMessage();

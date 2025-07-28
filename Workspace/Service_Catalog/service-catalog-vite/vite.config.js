@@ -34,12 +34,12 @@ export default defineConfig(({mode}) => {
 			cssCodeSplit: false,
 		},
 		server: {
-			port: 3006,
+			port: 3005,
 			host: '0.0.0.0',
 			cors: true,
 		},
 		preview: {
-			port: 3006,
+			port: 3005,
 			host: '0.0.0.0',
 			cors: true,
 		},
