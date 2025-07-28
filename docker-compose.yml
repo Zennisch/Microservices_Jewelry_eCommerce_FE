@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  container:
+    build:
+      context: ./Workspace/Container/container-vite
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - VITE_BACKEND_HOST=192.168.1.93
+      - VITE_BACKEND_PORT=8000
+    networks:
+      - frontend-network
+
+  frontend-service-account:
+    build:
+      context: ./Workspace/Service_Account/service-account-vite
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+    networks:
+      - frontend-network
+    depends_on:
+      - container
+
+  frontend-service-manager:
+    build:
+      context: ./Workspace/Service_Manager/service-manager-vite
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+    networks:
+      - frontend-network
+    depends_on:
+      - container
+
+  frontend-service-catalog:
+    build:
+      context: ./Workspace/Service_Catalog/service-catalog-vite
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+    networks:
+      - frontend-network
+    depends_on:
+      - container
+
+  frontend-service-cart-order:
+    build:
+      context: ./Workspace/Service_Cart_Order/service-cart-order-vite
+      dockerfile: Dockerfile
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+    networks:
+      - frontend-network
+    depends_on:
+      - container
+
+  # Optional services (uncomment if needed)  
+  # frontend-service-user:
+  #   build:
+  #     context: ./Workspace/Service_User/service-user-vite
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3004:3004"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - HOST=0.0.0.0
+  #   networks:
+  #     - frontend-network
+  #   depends_on:
+  #     - container
+
+  # frontend-service-admin:
+  #   build:
+  #     context: ./Workspace/Service_Admin/service-admin-vite
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - HOST=0.0.0.0
+  #   networks:
+  #     - frontend-network
+  #   depends_on:
+  #     - container
+
+networks:
+  frontend-network:
+    driver: bridge
