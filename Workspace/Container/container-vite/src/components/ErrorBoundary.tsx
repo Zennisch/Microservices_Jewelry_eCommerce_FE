@@ -27,6 +27,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
     render(): ReactNode {
         if (this.state.hasError) {
+            console.error('ErrorBoundary caught an error:', this.state.error);
             return (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-6 my-6 text-center">
                     <div className="text-red-600 text-5xl mb-4">

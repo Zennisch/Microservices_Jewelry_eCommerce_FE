@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 3003
 
-CMD ["pnpm", "run", "o"]
+CMD ["pnpm", "run", "preview"]

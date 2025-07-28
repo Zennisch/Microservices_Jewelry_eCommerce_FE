@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import cartOrderService from 'container/cartOrderService';
 import { format } from 'date-fns';
-import { Badge } from '../components/ui/badge';
-import { Input } from '../components/ui/input';
-import { Select } from '../components/ui/select';
-import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/Badge';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
+import { Button } from '../components/ui/Button';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);

@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
             react(),
             tailwindcss(),
             federation({
-                name: 'service-manager', // Đổi tên
+                name: 'service-admin',
                 filename: 'remoteEntry.js',
                 exposes: {
                     './App': './src/App.jsx',
@@ -30,12 +30,12 @@ export default defineConfig(({ mode }) => {
             cssCodeSplit: false,
         },
         server: {
-            port: 3003,
+            port: 3002,
             host: '0.0.0.0',
             cors: true,
         },
         preview: {
-            port: 3003,
+            port: 3002,
             host: '0.0.0.0',
             cors: true,
         }

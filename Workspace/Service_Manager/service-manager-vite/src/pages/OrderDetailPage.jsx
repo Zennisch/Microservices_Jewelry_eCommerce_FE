@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import cartOrderService from 'container/cartOrderService';
 import { format } from 'date-fns';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Select } from '../components/ui/select';
+import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/Button';
+import { Select } from '../components/ui/Select';
 import { toast } from '../components/ui/toast';
 
 // Order status progression sequence
